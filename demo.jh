@@ -224,8 +224,7 @@ deployment {
   appsFolders [store, invoice, notification, product]
   dockerRepositoryName "image.polarpoint.io"
   serviceDiscoveryType no
-  istio autoInjection
-  istioRoute true
+  istio true 
   kubernetesServiceType Ingress
   kubernetesNamespace dev-hih-01
   ingressDomain "demo.polarpoint.io"
