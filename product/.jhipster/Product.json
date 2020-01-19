@@ -2,6 +2,20 @@
     "name": "Product",
     "fields": [
         {
+            "fieldName": "additionalReceipts",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "client",
+            "fieldType": "Long",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
             "fieldName": "name",
             "fieldType": "String",
             "fieldValidateRules": [
@@ -13,39 +27,53 @@
             "fieldType": "String"
         },
         {
-            "fieldName": "price",
-            "fieldType": "BigDecimal",
-            "fieldValidateRules": [
-                "required",
-                "min"
-            ],
-            "fieldValidateRulesMin": 0
+            "fieldName": "paymentType",
+            "fieldType": "String"
         },
         {
-            "fieldName": "size",
-            "fieldType": "Size",
-            "fieldValues": "S,M,L,XL,XXL",
-            "fieldValidateRules": [
-                "required"
-            ]
+            "fieldName": "type",
+            "fieldType": "String"
         },
         {
-            "fieldName": "image",
-            "fieldType": "byte[]",
-            "fieldTypeBlobContent": "image"
+            "fieldName": "vatCode",
+            "fieldType": "String"
         }
     ],
     "relationships": [
         {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "token",
+            "otherEntityRelationshipName": "token",
+            "relationshipName": "token"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "vatRate",
+            "otherEntityRelationshipName": "vatRate",
+            "relationshipName": "vatRate"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "page",
+            "otherEntityRelationshipName": "page",
+            "relationshipName": "page"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "rulez",
+            "otherEntityRelationshipName": "rulez",
+            "relationshipName": "rulez"
+        },
+        {
             "relationshipType": "many-to-one",
-            "otherEntityName": "productCategory",
+            "otherEntityName": "category",
             "otherEntityRelationshipName": "product",
-            "relationshipName": "productCategory",
+            "relationshipName": "category",
             "otherEntityField": "name"
         }
     ],
     "changelogDate": "20200118233241",
-    "javadoc": "Entities for product microservice",
+    "javadoc": "Entities for product Catalogue microservice",
     "entityTableName": "product",
     "dto": "no",
     "pagination": "pagination",
@@ -55,7 +83,7 @@
     "readOnly": false,
     "clientRootFolder": "",
     "applications": [
-        "store",
+        "hah",
         "product"
     ],
     "microserviceName": "product"

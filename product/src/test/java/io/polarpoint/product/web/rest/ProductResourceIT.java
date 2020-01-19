@@ -17,11 +17,9 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Base64Utils;
 import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
-import java.math.BigDecimal;
 import java.util.List;
 
 import static io.polarpoint.product.web.rest.TestUtil.createFormattingConversionService;
@@ -30,12 +28,17 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import io.polarpoint.product.domain.enumeration.Size;
 /**
  * Integration tests for the {@link ProductResource} REST controller.
  */
 @SpringBootTest(classes = ProductApp.class)
 public class ProductResourceIT {
+
+    private static final String DEFAULT_ADDITIONAL_RECEIPTS = "AAAAAAAAAA";
+    private static final String UPDATED_ADDITIONAL_RECEIPTS = "BBBBBBBBBB";
+
+    private static final Long DEFAULT_CLIENT = 1L;
+    private static final Long UPDATED_CLIENT = 2L;
 
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
@@ -43,16 +46,14 @@ public class ProductResourceIT {
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
-    private static final BigDecimal DEFAULT_PRICE = new BigDecimal(0);
-    private static final BigDecimal UPDATED_PRICE = new BigDecimal(1);
+    private static final String DEFAULT_PAYMENT_TYPE = "AAAAAAAAAA";
+    private static final String UPDATED_PAYMENT_TYPE = "BBBBBBBBBB";
 
-    private static final Size DEFAULT_SIZE = Size.S;
-    private static final Size UPDATED_SIZE = Size.M;
+    private static final String DEFAULT_TYPE = "AAAAAAAAAA";
+    private static final String UPDATED_TYPE = "BBBBBBBBBB";
 
-    private static final byte[] DEFAULT_IMAGE = TestUtil.createByteArray(1, "0");
-    private static final byte[] UPDATED_IMAGE = TestUtil.createByteArray(1, "1");
-    private static final String DEFAULT_IMAGE_CONTENT_TYPE = "image/jpg";
-    private static final String UPDATED_IMAGE_CONTENT_TYPE = "image/png";
+    private static final String DEFAULT_VAT_CODE = "AAAAAAAAAA";
+    private static final String UPDATED_VAT_CODE = "BBBBBBBBBB";
 
     @Autowired
     private ProductRepository productRepository;
@@ -99,12 +100,13 @@ public class ProductResourceIT {
      */
     public static Product createEntity(EntityManager em) {
         Product product = new Product()
+            .additionalReceipts(DEFAULT_ADDITIONAL_RECEIPTS)
+            .client(DEFAULT_CLIENT)
             .name(DEFAULT_NAME)
             .description(DEFAULT_DESCRIPTION)
-            .price(DEFAULT_PRICE)
-            .size(DEFAULT_SIZE)
-            .image(DEFAULT_IMAGE)
-            .imageContentType(DEFAULT_IMAGE_CONTENT_TYPE);
+            .paymentType(DEFAULT_PAYMENT_TYPE)
+            .type(DEFAULT_TYPE)
+            .vatCode(DEFAULT_VAT_CODE);
         return product;
     }
     /**
@@ -115,12 +117,13 @@ public class ProductResourceIT {
      */
     public static Product createUpdatedEntity(EntityManager em) {
         Product product = new Product()
+            .additionalReceipts(UPDATED_ADDITIONAL_RECEIPTS)
+            .client(UPDATED_CLIENT)
             .name(UPDATED_NAME)
             .description(UPDATED_DESCRIPTION)
-            .price(UPDATED_PRICE)
-            .size(UPDATED_SIZE)
-            .image(UPDATED_IMAGE)
-            .imageContentType(UPDATED_IMAGE_CONTENT_TYPE);
+            .paymentType(UPDATED_PAYMENT_TYPE)
+            .type(UPDATED_TYPE)
+            .vatCode(UPDATED_VAT_CODE);
         return product;
     }
 
@@ -144,12 +147,13 @@ public class ProductResourceIT {
         List<Product> productList = productRepository.findAll();
         assertThat(productList).hasSize(databaseSizeBeforeCreate + 1);
         Product testProduct = productList.get(productList.size() - 1);
+        assertThat(testProduct.getAdditionalReceipts()).isEqualTo(DEFAULT_ADDITIONAL_RECEIPTS);
+        assertThat(testProduct.getClient()).isEqualTo(DEFAULT_CLIENT);
         assertThat(testProduct.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testProduct.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
-        assertThat(testProduct.getPrice()).isEqualTo(DEFAULT_PRICE);
-        assertThat(testProduct.getSize()).isEqualTo(DEFAULT_SIZE);
-        assertThat(testProduct.getImage()).isEqualTo(DEFAULT_IMAGE);
-        assertThat(testProduct.getImageContentType()).isEqualTo(DEFAULT_IMAGE_CONTENT_TYPE);
+        assertThat(testProduct.getPaymentType()).isEqualTo(DEFAULT_PAYMENT_TYPE);
+        assertThat(testProduct.getType()).isEqualTo(DEFAULT_TYPE);
+        assertThat(testProduct.getVatCode()).isEqualTo(DEFAULT_VAT_CODE);
     }
 
     @Test
@@ -174,46 +178,46 @@ public class ProductResourceIT {
 
     @Test
     @Transactional
+    public void checkAdditionalReceiptsIsRequired() throws Exception {
+        int databaseSizeBeforeTest = productRepository.findAll().size();
+        // set the field null
+        product.setAdditionalReceipts(null);
+
+        // Create the Product, which fails.
+
+        restProductMockMvc.perform(post("/api/products")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(product)))
+            .andExpect(status().isBadRequest());
+
+        List<Product> productList = productRepository.findAll();
+        assertThat(productList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkClientIsRequired() throws Exception {
+        int databaseSizeBeforeTest = productRepository.findAll().size();
+        // set the field null
+        product.setClient(null);
+
+        // Create the Product, which fails.
+
+        restProductMockMvc.perform(post("/api/products")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(product)))
+            .andExpect(status().isBadRequest());
+
+        List<Product> productList = productRepository.findAll();
+        assertThat(productList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void checkNameIsRequired() throws Exception {
         int databaseSizeBeforeTest = productRepository.findAll().size();
         // set the field null
         product.setName(null);
-
-        // Create the Product, which fails.
-
-        restProductMockMvc.perform(post("/api/products")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(product)))
-            .andExpect(status().isBadRequest());
-
-        List<Product> productList = productRepository.findAll();
-        assertThat(productList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkPriceIsRequired() throws Exception {
-        int databaseSizeBeforeTest = productRepository.findAll().size();
-        // set the field null
-        product.setPrice(null);
-
-        // Create the Product, which fails.
-
-        restProductMockMvc.perform(post("/api/products")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(product)))
-            .andExpect(status().isBadRequest());
-
-        List<Product> productList = productRepository.findAll();
-        assertThat(productList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    public void checkSizeIsRequired() throws Exception {
-        int databaseSizeBeforeTest = productRepository.findAll().size();
-        // set the field null
-        product.setSize(null);
 
         // Create the Product, which fails.
 
@@ -237,12 +241,13 @@ public class ProductResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(product.getId().intValue())))
+            .andExpect(jsonPath("$.[*].additionalReceipts").value(hasItem(DEFAULT_ADDITIONAL_RECEIPTS)))
+            .andExpect(jsonPath("$.[*].client").value(hasItem(DEFAULT_CLIENT.intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
-            .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
-            .andExpect(jsonPath("$.[*].size").value(hasItem(DEFAULT_SIZE.toString())))
-            .andExpect(jsonPath("$.[*].imageContentType").value(hasItem(DEFAULT_IMAGE_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].image").value(hasItem(Base64Utils.encodeToString(DEFAULT_IMAGE))));
+            .andExpect(jsonPath("$.[*].paymentType").value(hasItem(DEFAULT_PAYMENT_TYPE)))
+            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE)))
+            .andExpect(jsonPath("$.[*].vatCode").value(hasItem(DEFAULT_VAT_CODE)));
     }
     
     @Test
@@ -256,12 +261,13 @@ public class ProductResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(product.getId().intValue()))
+            .andExpect(jsonPath("$.additionalReceipts").value(DEFAULT_ADDITIONAL_RECEIPTS))
+            .andExpect(jsonPath("$.client").value(DEFAULT_CLIENT.intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
-            .andExpect(jsonPath("$.price").value(DEFAULT_PRICE.intValue()))
-            .andExpect(jsonPath("$.size").value(DEFAULT_SIZE.toString()))
-            .andExpect(jsonPath("$.imageContentType").value(DEFAULT_IMAGE_CONTENT_TYPE))
-            .andExpect(jsonPath("$.image").value(Base64Utils.encodeToString(DEFAULT_IMAGE)));
+            .andExpect(jsonPath("$.paymentType").value(DEFAULT_PAYMENT_TYPE))
+            .andExpect(jsonPath("$.type").value(DEFAULT_TYPE))
+            .andExpect(jsonPath("$.vatCode").value(DEFAULT_VAT_CODE));
     }
 
     @Test
@@ -285,12 +291,13 @@ public class ProductResourceIT {
         // Disconnect from session so that the updates on updatedProduct are not directly saved in db
         em.detach(updatedProduct);
         updatedProduct
+            .additionalReceipts(UPDATED_ADDITIONAL_RECEIPTS)
+            .client(UPDATED_CLIENT)
             .name(UPDATED_NAME)
             .description(UPDATED_DESCRIPTION)
-            .price(UPDATED_PRICE)
-            .size(UPDATED_SIZE)
-            .image(UPDATED_IMAGE)
-            .imageContentType(UPDATED_IMAGE_CONTENT_TYPE);
+            .paymentType(UPDATED_PAYMENT_TYPE)
+            .type(UPDATED_TYPE)
+            .vatCode(UPDATED_VAT_CODE);
 
         restProductMockMvc.perform(put("/api/products")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -301,12 +308,13 @@ public class ProductResourceIT {
         List<Product> productList = productRepository.findAll();
         assertThat(productList).hasSize(databaseSizeBeforeUpdate);
         Product testProduct = productList.get(productList.size() - 1);
+        assertThat(testProduct.getAdditionalReceipts()).isEqualTo(UPDATED_ADDITIONAL_RECEIPTS);
+        assertThat(testProduct.getClient()).isEqualTo(UPDATED_CLIENT);
         assertThat(testProduct.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testProduct.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-        assertThat(testProduct.getPrice()).isEqualTo(UPDATED_PRICE);
-        assertThat(testProduct.getSize()).isEqualTo(UPDATED_SIZE);
-        assertThat(testProduct.getImage()).isEqualTo(UPDATED_IMAGE);
-        assertThat(testProduct.getImageContentType()).isEqualTo(UPDATED_IMAGE_CONTENT_TYPE);
+        assertThat(testProduct.getPaymentType()).isEqualTo(UPDATED_PAYMENT_TYPE);
+        assertThat(testProduct.getType()).isEqualTo(UPDATED_TYPE);
+        assertThat(testProduct.getVatCode()).isEqualTo(UPDATED_VAT_CODE);
     }
 
     @Test
