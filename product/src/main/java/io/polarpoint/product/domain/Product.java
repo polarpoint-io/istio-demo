@@ -8,14 +8,13 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-
-import io.polarpoint.product.domain.enumeration.Size;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * Entities for product microservice
+ * Entities for product Catalogue microservice
  */
-@ApiModel(description = "Entities for product microservice")
+@ApiModel(description = "Entities for product Catalogue microservice")
 @Entity
 @Table(name = "product")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -24,8 +23,17 @@ public class Product implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
+
+    @NotNull
+    @Column(name = "additional_receipts", nullable = false)
+    private String additionalReceipts;
+
+    @NotNull
+    @Column(name = "client", nullable = false)
+    private Long client;
 
     @NotNull
     @Column(name = "name", nullable = false)
@@ -34,26 +42,34 @@ public class Product implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @NotNull
-    @DecimalMin(value = "0")
-    @Column(name = "price", precision = 21, scale = 2, nullable = false)
-    private BigDecimal price;
+    @Column(name = "payment_type")
+    private String paymentType;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(name = "size", nullable = false)
-    private Size size;
+    @Column(name = "type")
+    private String type;
 
-    @Lob
-    @Column(name = "image")
-    private byte[] image;
+    @Column(name = "vat_code")
+    private String vatCode;
 
-    @Column(name = "image_content_type")
-    private String imageContentType;
+    @OneToMany(mappedBy = "token")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<Token> tokens = new HashSet<>();
+
+    @OneToMany(mappedBy = "vatRate")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<VatRate> vatRates = new HashSet<>();
+
+    @OneToMany(mappedBy = "page")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<Page> pages = new HashSet<>();
+
+    @OneToMany(mappedBy = "rulez")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<Rulez> rulezs = new HashSet<>();
 
     @ManyToOne
     @JsonIgnoreProperties("products")
-    private ProductCategory productCategory;
+    private Category category;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -62,6 +78,32 @@ public class Product implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getAdditionalReceipts() {
+        return additionalReceipts;
+    }
+
+    public Product additionalReceipts(String additionalReceipts) {
+        this.additionalReceipts = additionalReceipts;
+        return this;
+    }
+
+    public void setAdditionalReceipts(String additionalReceipts) {
+        this.additionalReceipts = additionalReceipts;
+    }
+
+    public Long getClient() {
+        return client;
+    }
+
+    public Product client(Long client) {
+        this.client = client;
+        return this;
+    }
+
+    public void setClient(Long client) {
+        this.client = client;
     }
 
     public String getName() {
@@ -90,69 +132,156 @@ public class Product implements Serializable {
         this.description = description;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public String getPaymentType() {
+        return paymentType;
     }
 
-    public Product price(BigDecimal price) {
-        this.price = price;
+    public Product paymentType(String paymentType) {
+        this.paymentType = paymentType;
         return this;
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public void setPaymentType(String paymentType) {
+        this.paymentType = paymentType;
     }
 
-    public Size getSize() {
-        return size;
+    public String getType() {
+        return type;
     }
 
-    public Product size(Size size) {
-        this.size = size;
+    public Product type(String type) {
+        this.type = type;
         return this;
     }
 
-    public void setSize(Size size) {
-        this.size = size;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public byte[] getImage() {
-        return image;
+    public String getVatCode() {
+        return vatCode;
     }
 
-    public Product image(byte[] image) {
-        this.image = image;
+    public Product vatCode(String vatCode) {
+        this.vatCode = vatCode;
         return this;
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
+    public void setVatCode(String vatCode) {
+        this.vatCode = vatCode;
     }
 
-    public String getImageContentType() {
-        return imageContentType;
+    public Set<Token> getTokens() {
+        return tokens;
     }
 
-    public Product imageContentType(String imageContentType) {
-        this.imageContentType = imageContentType;
+    public Product tokens(Set<Token> tokens) {
+        this.tokens = tokens;
         return this;
     }
 
-    public void setImageContentType(String imageContentType) {
-        this.imageContentType = imageContentType;
-    }
-
-    public ProductCategory getProductCategory() {
-        return productCategory;
-    }
-
-    public Product productCategory(ProductCategory productCategory) {
-        this.productCategory = productCategory;
+    public Product addToken(Token token) {
+        this.tokens.add(token);
+        token.setToken(this);
         return this;
     }
 
-    public void setProductCategory(ProductCategory productCategory) {
-        this.productCategory = productCategory;
+    public Product removeToken(Token token) {
+        this.tokens.remove(token);
+        token.setToken(null);
+        return this;
+    }
+
+    public void setTokens(Set<Token> tokens) {
+        this.tokens = tokens;
+    }
+
+    public Set<VatRate> getVatRates() {
+        return vatRates;
+    }
+
+    public Product vatRates(Set<VatRate> vatRates) {
+        this.vatRates = vatRates;
+        return this;
+    }
+
+    public Product addVatRate(VatRate vatRate) {
+        this.vatRates.add(vatRate);
+        vatRate.setVatRate(this);
+        return this;
+    }
+
+    public Product removeVatRate(VatRate vatRate) {
+        this.vatRates.remove(vatRate);
+        vatRate.setVatRate(null);
+        return this;
+    }
+
+    public void setVatRates(Set<VatRate> vatRates) {
+        this.vatRates = vatRates;
+    }
+
+    public Set<Page> getPages() {
+        return pages;
+    }
+
+    public Product pages(Set<Page> pages) {
+        this.pages = pages;
+        return this;
+    }
+
+    public Product addPage(Page page) {
+        this.pages.add(page);
+        page.setPage(this);
+        return this;
+    }
+
+    public Product removePage(Page page) {
+        this.pages.remove(page);
+        page.setPage(null);
+        return this;
+    }
+
+    public void setPages(Set<Page> pages) {
+        this.pages = pages;
+    }
+
+    public Set<Rulez> getRulezs() {
+        return rulezs;
+    }
+
+    public Product rulezs(Set<Rulez> rulezs) {
+        this.rulezs = rulezs;
+        return this;
+    }
+
+    public Product addRulez(Rulez rulez) {
+        this.rulezs.add(rulez);
+        rulez.setRulez(this);
+        return this;
+    }
+
+    public Product removeRulez(Rulez rulez) {
+        this.rulezs.remove(rulez);
+        rulez.setRulez(null);
+        return this;
+    }
+
+    public void setRulezs(Set<Rulez> rulezs) {
+        this.rulezs = rulezs;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public Product category(Category category) {
+        this.category = category;
+        return this;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -176,12 +305,13 @@ public class Product implements Serializable {
     public String toString() {
         return "Product{" +
             "id=" + getId() +
+            ", additionalReceipts='" + getAdditionalReceipts() + "'" +
+            ", client=" + getClient() +
             ", name='" + getName() + "'" +
             ", description='" + getDescription() + "'" +
-            ", price=" + getPrice() +
-            ", size='" + getSize() + "'" +
-            ", image='" + getImage() + "'" +
-            ", imageContentType='" + getImageContentType() + "'" +
+            ", paymentType='" + getPaymentType() + "'" +
+            ", type='" + getType() + "'" +
+            ", vatCode='" + getVatCode() + "'" +
             "}";
     }
 }

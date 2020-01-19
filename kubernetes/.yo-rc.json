@@ -4,7 +4,11 @@
     "gatewayType": "zuul",
     "monitoring": "no",
     "directoryPath": "../",
-    "appsFolders": ["store", "invoice", "notification", "product"],
+    "appsFolders": [
+      "branch",
+      "basket",
+      "product"
+    ],
     "clusteredDbApps": [],
     "consoleOptions": [],
     "serviceDiscoveryType": false,

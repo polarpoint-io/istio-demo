@@ -11,7 +11,7 @@
     "nativeLanguage": "en",
     "packageName": "io.polarpoint.product",
     "packageFolder": "io/polarpoint/product",
-    "prodDatabaseType": "mysql",
+    "prodDatabaseType": "postgresql",
     "searchEngine": false,
     "serviceDiscoveryType": false,
     "skipClient": true,
@@ -31,8 +31,8 @@
     "creationTimestamp": 1579390370426,
     "entitySuffix": "",
     "dtoSuffix": "DTO",
-    "otherModules": [],
-    "blueprints": []
+    "blueprints": [],
+    "otherModules": []
   },
-  "entities": ["Product", "ProductCategory", "ProductOrder", "OrderItem"]
+  "entities": ["Product", "Rulez", "Category", "SubscriptionGroup", "Branch", "Field", "Page", "Token", "VatRate"]
 }
