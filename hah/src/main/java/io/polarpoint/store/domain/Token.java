@@ -1,5 +1,4 @@
 package io.polarpoint.store.domain;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -7,6 +6,8 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A Token.
@@ -45,10 +46,9 @@ public class Token implements Serializable {
     @Column(name = "type")
     private String type;
 
-    @ManyToOne(optional = false)
-    @NotNull
-    @JsonIgnoreProperties("tokens")
-    private Product token;
+    @OneToMany(mappedBy = "product")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<Product> products = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -150,17 +150,29 @@ public class Token implements Serializable {
         this.type = type;
     }
 
-    public Product getToken() {
-        return token;
+    public Set<Product> getProducts() {
+        return products;
     }
 
-    public Token token(Product product) {
-        this.token = product;
+    public Token products(Set<Product> products) {
+        this.products = products;
         return this;
     }
 
-    public void setToken(Product product) {
-        this.token = product;
+    public Token addProduct(Product product) {
+        this.products.add(product);
+        product.setProduct(this);
+        return this;
+    }
+
+    public Token removeProduct(Product product) {
+        this.products.remove(product);
+        product.setProduct(null);
+        return this;
+    }
+
+    public void setProducts(Set<Product> products) {
+        this.products = products;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

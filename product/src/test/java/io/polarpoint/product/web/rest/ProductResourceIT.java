@@ -2,6 +2,7 @@ package io.polarpoint.product.web.rest;
 
 import io.polarpoint.product.ProductApp;
 import io.polarpoint.product.domain.Product;
+import io.polarpoint.product.domain.Token;
 import io.polarpoint.product.repository.ProductRepository;
 import io.polarpoint.product.service.ProductService;
 import io.polarpoint.product.web.rest.errors.ExceptionTranslator;
@@ -107,6 +108,16 @@ public class ProductResourceIT {
             .paymentType(DEFAULT_PAYMENT_TYPE)
             .type(DEFAULT_TYPE)
             .vatCode(DEFAULT_VAT_CODE);
+        // Add required entity
+        Token token;
+        if (TestUtil.findAll(em, Token.class).isEmpty()) {
+            token = TokenResourceIT.createEntity(em);
+            em.persist(token);
+            em.flush();
+        } else {
+            token = TestUtil.findAll(em, Token.class).get(0);
+        }
+        product.setProduct(token);
         return product;
     }
     /**
@@ -124,6 +135,16 @@ public class ProductResourceIT {
             .paymentType(UPDATED_PAYMENT_TYPE)
             .type(UPDATED_TYPE)
             .vatCode(UPDATED_VAT_CODE);
+        // Add required entity
+        Token token;
+        if (TestUtil.findAll(em, Token.class).isEmpty()) {
+            token = TokenResourceIT.createUpdatedEntity(em);
+            em.persist(token);
+            em.flush();
+        } else {
+            token = TestUtil.findAll(em, Token.class).get(0);
+        }
+        product.setProduct(token);
         return product;
     }
 

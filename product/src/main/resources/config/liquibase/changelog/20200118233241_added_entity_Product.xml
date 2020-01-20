@@ -36,6 +36,9 @@
             <column name="vat_code" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
+            <column name="product_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
             <column name="category_id" type="bigint">
                 <constraints nullable="true" />
             </column>
@@ -69,6 +72,7 @@
             <column name="payment_type" type="string"/>
             <column name="type" type="string"/>
             <column name="vat_code" type="string"/>
+            <column name="product_id" type="numeric"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here, do not remove-->
         </loadData>
     </changeSet>

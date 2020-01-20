@@ -42,12 +42,6 @@
     "relationships": [
         {
             "relationshipType": "one-to-many",
-            "otherEntityName": "token",
-            "otherEntityRelationshipName": "token",
-            "relationshipName": "token"
-        },
-        {
-            "relationshipType": "one-to-many",
             "otherEntityName": "vatRate",
             "otherEntityRelationshipName": "vatRate",
             "relationshipName": "vatRate"
@@ -63,6 +57,14 @@
             "otherEntityName": "rulez",
             "otherEntityRelationshipName": "rulez",
             "relationshipName": "rulez"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "token",
+            "otherEntityRelationshipName": "product",
+            "relationshipValidateRules": "required",
+            "relationshipName": "product",
+            "otherEntityField": "code"
         },
         {
             "relationshipType": "many-to-one",

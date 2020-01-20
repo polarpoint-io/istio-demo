@@ -36,8 +36,8 @@
     "creationTimestamp": 1579393041406,
     "entitySuffix": "",
     "dtoSuffix": "DTO",
-    "otherModules": [],
-    "blueprints": []
+    "blueprints": [],
+    "otherModules": []
   },
   "entities": [
     "Branch",

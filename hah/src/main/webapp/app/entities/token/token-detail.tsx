@@ -67,10 +67,6 @@ export const TokenDetail = (props: ITokenDetailProps) => {
             </span>
           </dt>
           <dd>{tokenEntity.type}</dd>
-          <dt>
-            <Translate contentKey="hahApp.token.token">Token</Translate>
-          </dt>
-          <dd>{tokenEntity.token ? tokenEntity.token.code : ''}</dd>
         </dl>
         <Button tag={Link} to="/token" replace color="info">
           <FontAwesomeIcon icon="arrow-left" />{' '}

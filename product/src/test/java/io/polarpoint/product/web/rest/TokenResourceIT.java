@@ -2,7 +2,6 @@ package io.polarpoint.product.web.rest;
 
 import io.polarpoint.product.ProductApp;
 import io.polarpoint.product.domain.Token;
-import io.polarpoint.product.domain.Product;
 import io.polarpoint.product.repository.TokenRepository;
 import io.polarpoint.product.web.rest.errors.ExceptionTranslator;
 
@@ -104,16 +103,6 @@ public class TokenResourceIT {
             .name(DEFAULT_NAME)
             .svcStart(DEFAULT_SVC_START)
             .type(DEFAULT_TYPE);
-        // Add required entity
-        Product product;
-        if (TestUtil.findAll(em, Product.class).isEmpty()) {
-            product = ProductResourceIT.createEntity(em);
-            em.persist(product);
-            em.flush();
-        } else {
-            product = TestUtil.findAll(em, Product.class).get(0);
-        }
-        token.setToken(product);
         return token;
     }
     /**
@@ -131,16 +120,6 @@ public class TokenResourceIT {
             .name(UPDATED_NAME)
             .svcStart(UPDATED_SVC_START)
             .type(UPDATED_TYPE);
-        // Add required entity
-        Product product;
-        if (TestUtil.findAll(em, Product.class).isEmpty()) {
-            product = ProductResourceIT.createUpdatedEntity(em);
-            em.persist(product);
-            em.flush();
-        } else {
-            product = TestUtil.findAll(em, Product.class).get(0);
-        }
-        token.setToken(product);
         return token;
     }
 
