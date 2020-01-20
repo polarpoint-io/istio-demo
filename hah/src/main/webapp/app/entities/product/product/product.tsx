@@ -91,6 +91,9 @@ export const Product = (props: IProductProps) => {
                   <Translate contentKey="hahApp.productProduct.vatCode">Vat Code</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
                 <th>
+                  <Translate contentKey="hahApp.productProduct.product">Product</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
+                <th>
                   <Translate contentKey="hahApp.productProduct.category">Category</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
                 <th />
@@ -111,6 +114,7 @@ export const Product = (props: IProductProps) => {
                   <td>{product.paymentType}</td>
                   <td>{product.type}</td>
                   <td>{product.vatCode}</td>
+                  <td>{product.product ? <Link to={`token/${product.product.id}`}>{product.product.code}</Link> : ''}</td>
                   <td>{product.category ? <Link to={`category/${product.category.id}`}>{product.category.name}</Link> : ''}</td>
                   <td className="text-right">
                     <div className="btn-group flex-btn-group-container">

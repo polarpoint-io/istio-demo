@@ -57,9 +57,6 @@ export const Token = (props: ITokenProps) => {
                 <th>
                   <Translate contentKey="hahApp.token.type">Type</Translate>
                 </th>
-                <th>
-                  <Translate contentKey="hahApp.token.token">Token</Translate>
-                </th>
                 <th />
               </tr>
             </thead>
@@ -78,7 +75,6 @@ export const Token = (props: ITokenProps) => {
                   <td>{token.name}</td>
                   <td>{token.svcStart}</td>
                   <td>{token.type}</td>
-                  <td>{token.token ? <Link to={`product/${token.token.id}`}>{token.token.code}</Link> : ''}</td>
                   <td className="text-right">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`${match.url}/${token.id}`} color="info" size="sm">

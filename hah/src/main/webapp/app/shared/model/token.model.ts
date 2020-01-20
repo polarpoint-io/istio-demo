@@ -9,7 +9,7 @@ export interface IToken {
   name?: string;
   svcStart?: number;
   type?: string;
-  token?: IProduct;
+  products?: IProduct[];
 }
 
 export const defaultValue: Readonly<IToken> = {};

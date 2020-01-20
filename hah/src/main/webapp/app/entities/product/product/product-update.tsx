@@ -7,6 +7,8 @@ import { Translate, translate, ICrudGetAction, ICrudGetAllAction, ICrudPutAction
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IRootState } from 'app/shared/reducers';
 
+import { IToken } from 'app/shared/model/token.model';
+import { getEntities as getTokens } from 'app/entities/token/token.reducer';
 import { ICategory } from 'app/shared/model/product/category.model';
 import { getEntities as getCategories } from 'app/entities/product/category/category.reducer';
 import { getEntity, updateEntity, createEntity, reset } from './product.reducer';
@@ -17,10 +19,11 @@ import { mapIdList } from 'app/shared/util/entity-utils';
 export interface IProductUpdateProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
 
 export const ProductUpdate = (props: IProductUpdateProps) => {
+  const [productId, setProductId] = useState('0');
   const [categoryId, setCategoryId] = useState('0');
   const [isNew, setIsNew] = useState(!props.match.params || !props.match.params.id);
 
-  const { productEntity, categories, loading, updating } = props;
+  const { productEntity, tokens, categories, loading, updating } = props;
 
   const handleClose = () => {
     props.history.push('/product' + props.location.search);
@@ -33,6 +36,7 @@ export const ProductUpdate = (props: IProductUpdateProps) => {
       props.getEntity(props.match.params.id);
     }
 
+    props.getTokens();
     props.getCategories();
   }, []);
 
@@ -146,6 +150,30 @@ export const ProductUpdate = (props: IProductUpdateProps) => {
                 <AvField id="product-vatCode" type="text" name="vatCode" />
               </AvGroup>
               <AvGroup>
+                <Label for="product-product">
+                  <Translate contentKey="hahApp.productProduct.product">Product</Translate>
+                </Label>
+                <AvInput
+                  id="product-product"
+                  type="select"
+                  className="form-control"
+                  name="product.id"
+                  value={isNew ? tokens[0] && tokens[0].id : productEntity.product.id}
+                  required
+                >
+                  {tokens
+                    ? tokens.map(otherEntity => (
+                        <option value={otherEntity.id} key={otherEntity.id}>
+                          {otherEntity.code}
+                        </option>
+                      ))
+                    : null}
+                </AvInput>
+                <AvFeedback>
+                  <Translate contentKey="entity.validation.required">This field is required.</Translate>
+                </AvFeedback>
+              </AvGroup>
+              <AvGroup>
                 <Label for="product-category">
                   <Translate contentKey="hahApp.productProduct.category">Category</Translate>
                 </Label>
@@ -182,6 +210,7 @@ export const ProductUpdate = (props: IProductUpdateProps) => {
 };
 
 const mapStateToProps = (storeState: IRootState) => ({
+  tokens: storeState.token.entities,
   categories: storeState.category.entities,
   productEntity: storeState.product.entity,
   loading: storeState.product.loading,
@@ -190,6 +219,7 @@ const mapStateToProps = (storeState: IRootState) => ({
 });
 
 const mapDispatchToProps = {
+  getTokens,
   getCategories,
   getEntity,
   updateEntity,

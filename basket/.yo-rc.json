@@ -31,8 +31,8 @@
     "creationTimestamp": 1579393041196,
     "entitySuffix": "",
     "dtoSuffix": "DTO",
-    "otherModules": [],
-    "blueprints": []
+    "blueprints": [],
+    "otherModules": []
   },
   "entities": ["Basket", "BasketEntry", "VatAnalysis"]
 }

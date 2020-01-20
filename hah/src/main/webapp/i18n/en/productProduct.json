@@ -20,10 +20,10 @@
       "paymentType": "Payment Type",
       "type": "Type",
       "vatCode": "Vat Code",
-      "token": "Token",
       "vatRate": "Vat Rate",
       "page": "Page",
       "rulez": "Rulez",
+      "product": "Product",
       "category": "Category"
     }
   },

@@ -7,8 +7,6 @@ import { Translate, translate, ICrudGetAction, ICrudGetAllAction, ICrudPutAction
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IRootState } from 'app/shared/reducers';
 
-import { IProduct } from 'app/shared/model/product/product.model';
-import { getEntities as getProducts } from 'app/entities/product/product/product.reducer';
 import { getEntity, updateEntity, createEntity, reset } from './token.reducer';
 import { IToken } from 'app/shared/model/token.model';
 import { convertDateTimeFromServer, convertDateTimeToServer } from 'app/shared/util/date-utils';
@@ -17,10 +15,9 @@ import { mapIdList } from 'app/shared/util/entity-utils';
 export interface ITokenUpdateProps extends StateProps, DispatchProps, RouteComponentProps<{ id: string }> {}
 
 export const TokenUpdate = (props: ITokenUpdateProps) => {
-  const [tokenId, setTokenId] = useState('0');
   const [isNew, setIsNew] = useState(!props.match.params || !props.match.params.id);
 
-  const { tokenEntity, products, loading, updating } = props;
+  const { tokenEntity, loading, updating } = props;
 
   const handleClose = () => {
     props.history.push('/token');
@@ -32,8 +29,6 @@ export const TokenUpdate = (props: ITokenUpdateProps) => {
     } else {
       props.getEntity(props.match.params.id);
     }
-
-    props.getProducts();
   }, []);
 
   useEffect(() => {
@@ -129,30 +124,6 @@ export const TokenUpdate = (props: ITokenUpdateProps) => {
                 </Label>
                 <AvField id="token-type" type="text" name="type" />
               </AvGroup>
-              <AvGroup>
-                <Label for="token-token">
-                  <Translate contentKey="hahApp.token.token">Token</Translate>
-                </Label>
-                <AvInput
-                  id="token-token"
-                  type="select"
-                  className="form-control"
-                  name="token.id"
-                  value={isNew ? products[0] && products[0].id : tokenEntity.token.id}
-                  required
-                >
-                  {products
-                    ? products.map(otherEntity => (
-                        <option value={otherEntity.id} key={otherEntity.id}>
-                          {otherEntity.code}
-                        </option>
-                      ))
-                    : null}
-                </AvInput>
-                <AvFeedback>
-                  <Translate contentKey="entity.validation.required">This field is required.</Translate>
-                </AvFeedback>
-              </AvGroup>
               <Button tag={Link} id="cancel-save" to="/token" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;
@@ -175,7 +146,6 @@ export const TokenUpdate = (props: ITokenUpdateProps) => {
 };
 
 const mapStateToProps = (storeState: IRootState) => ({
-  products: storeState.product.entities,
   tokenEntity: storeState.token.entity,
   loading: storeState.token.loading,
   updating: storeState.token.updating,
@@ -183,7 +153,6 @@ const mapStateToProps = (storeState: IRootState) => ({
 });
 
 const mapDispatchToProps = {
-  getProducts,
   getEntity,
   updateEntity,
   createEntity,

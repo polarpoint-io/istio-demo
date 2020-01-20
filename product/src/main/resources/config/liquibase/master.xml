@@ -31,7 +31,6 @@
     <include file="config/liquibase/changelog/20200118233244_added_entity_constraints_OrderItem.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200119001714_added_entity_constraints_Branch.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200119001716_added_entity_constraints_Category.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20200119001718_added_entity_constraints_Token.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200119001719_added_entity_constraints_Rulez.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200119001720_added_entity_constraints_VatRate.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20200119001722_added_entity_constraints_Page.xml" relativeToChangelogFile="false"/>

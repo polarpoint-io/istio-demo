@@ -68,6 +68,10 @@ export const ProductDetail = (props: IProductDetailProps) => {
           </dt>
           <dd>{productEntity.vatCode}</dd>
           <dt>
+            <Translate contentKey="hahApp.productProduct.product">Product</Translate>
+          </dt>
+          <dd>{productEntity.product ? productEntity.product.code : ''}</dd>
+          <dt>
             <Translate contentKey="hahApp.productProduct.category">Category</Translate>
           </dt>
           <dd>{productEntity.category ? productEntity.category.name : ''}</dd>

@@ -51,10 +51,6 @@ public class Product implements Serializable {
     @Column(name = "vat_code")
     private String vatCode;
 
-    @OneToMany(mappedBy = "token")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<Token> tokens = new HashSet<>();
-
     @OneToMany(mappedBy = "vatRate")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<VatRate> vatRates = new HashSet<>();
@@ -66,6 +62,11 @@ public class Product implements Serializable {
     @OneToMany(mappedBy = "rulez")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Rulez> rulezs = new HashSet<>();
+
+    @ManyToOne(optional = false)
+    @NotNull
+    @JsonIgnoreProperties("products")
+    private Token product;
 
     @ManyToOne
     @JsonIgnoreProperties("products")
@@ -171,31 +172,6 @@ public class Product implements Serializable {
         this.vatCode = vatCode;
     }
 
-    public Set<Token> getTokens() {
-        return tokens;
-    }
-
-    public Product tokens(Set<Token> tokens) {
-        this.tokens = tokens;
-        return this;
-    }
-
-    public Product addToken(Token token) {
-        this.tokens.add(token);
-        token.setToken(this);
-        return this;
-    }
-
-    public Product removeToken(Token token) {
-        this.tokens.remove(token);
-        token.setToken(null);
-        return this;
-    }
-
-    public void setTokens(Set<Token> tokens) {
-        this.tokens = tokens;
-    }
-
     public Set<VatRate> getVatRates() {
         return vatRates;
     }
@@ -269,6 +245,19 @@ public class Product implements Serializable {
 
     public void setRulezs(Set<Rulez> rulezs) {
         this.rulezs = rulezs;
+    }
+
+    public Token getProduct() {
+        return product;
+    }
+
+    public Product product(Token token) {
+        this.product = token;
+        return this;
+    }
+
+    public void setProduct(Token token) {
+        this.product = token;
     }
 
     public Category getCategory() {
